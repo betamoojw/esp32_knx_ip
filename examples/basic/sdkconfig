@@ -989,6 +989,14 @@ CONFIG_PARTITION_TABLE_MD5=y
 # end of Partition Table
 
 #
+# KNX/IP basic example
+#
+CONFIG_KNX_EXAMPLE_WIFI_SSID="knx_test"
+CONFIG_KNX_EXAMPLE_WIFI_PASSWORD="knx_passw"
+CONFIG_KNX_EXAMPLE_RUN_SECONDS=500
+# end of KNX/IP basic example
+
+#
 # Compiler options
 #
 # default:

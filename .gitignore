@@ -1,0 +1,23 @@
+# ESP-IDF generated files
+**/build*/
+**/managed_components/
+**/dependencies.lock
+**/sdkconfig.old
+**/gdbinit/
+
+# Keep checked-in sdkconfig defaults, but ignore local generated configurations
+**/sdkconfig
+!**/sdkconfig.defaults
+!**/sdkconfig.defaults.*
+
+# Editors and tooling
+**/.vscode/
+
+# Documentation and package output
+**/doxygen_output*/
+**/doxygen*/
+**/dist/
+
+# Python cache
+**/__pycache__/
+*.py[cod]

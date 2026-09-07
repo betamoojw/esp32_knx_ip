@@ -1,0 +1,9 @@
+version: "1.0.0"
+description: Optional ESP-IDF HTTP configuration adapter for the esp_knx_ip component
+url: https://github.com/betamoojw/esp32_knx_ip
+repository: https://github.com/betamoojw/esp32_knx_ip.git
+documentation: https://github.com/betamoojw/esp32_knx_ip/tree/main/components/esp_knx_ip_web
+issues: https://github.com/betamoojw/esp32_knx_ip/issues
+dependencies:
+  idf: ">=5.0"
+  betamoojw/esp_knx_ip: "^1.0.0"

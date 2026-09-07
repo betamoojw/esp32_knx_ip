@@ -1,0 +1,8 @@
+version: "1.0.0"
+description: Native ESP-IDF component for KNXnet/IP routing, DPT conversion, callbacks, and NVS persistence
+url: https://github.com/betamoojw/esp32_knx_ip
+repository: https://github.com/betamoojw/esp32_knx_ip.git
+documentation: https://github.com/betamoojw/esp32_knx_ip/tree/main/components/esp_knx_ip
+issues: https://github.com/betamoojw/esp32_knx_ip/issues
+dependencies:
+  idf: ">=5.0"
