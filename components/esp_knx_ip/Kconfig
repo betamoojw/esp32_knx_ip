@@ -1,0 +1,28 @@
+menu "ESP KNX/IP component"
+
+    config ESP_KNX_IP_MAX_GROUP_ADDRESSES
+        int "Maximum callback registrations"
+        range 1 255
+        default 32
+        help
+            Fixed callback registry capacity allocated in each component handle.
+
+    config ESP_KNX_IP_PACKET_BUFFER_SIZE
+        int "KNXnet/IP packet buffer size"
+        range 271 1472
+        default 512
+        help
+            Stack buffer used by the receive task and send calls. The minimum
+            accommodates the public maximum APDU size plus protocol headers.
+
+    config ESP_KNX_IP_TASK_STACK_SIZE
+        int "Receive task stack size"
+        range 3072 16384
+        default 4096
+
+    config ESP_KNX_IP_TASK_PRIORITY
+        int "Receive task priority"
+        range 1 24
+        default 5
+
+endmenu
