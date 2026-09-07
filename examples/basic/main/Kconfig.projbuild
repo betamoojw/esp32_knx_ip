@@ -1,0 +1,16 @@
+menu "KNX/IP basic example"
+
+    config KNX_EXAMPLE_WIFI_SSID
+        string "Wi-Fi SSID"
+        default ""
+
+    config KNX_EXAMPLE_WIFI_PASSWORD
+        string "Wi-Fi password"
+        default ""
+
+    config KNX_EXAMPLE_RUN_SECONDS
+        int "Run time before clean shutdown (0 means forever)"
+        range 0 86400
+        default 0
+
+endmenu
