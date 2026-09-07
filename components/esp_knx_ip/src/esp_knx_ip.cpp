@@ -6,6 +6,7 @@
 
 #include "esp_log.h"
 #include "lwip/inet.h"
+#include "nvs.h"
 
 #include <cstring>
 #include <new>

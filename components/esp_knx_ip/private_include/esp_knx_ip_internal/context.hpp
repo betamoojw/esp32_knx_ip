@@ -7,6 +7,7 @@
 #include "freertos/semphr.h"
 #include "freertos/task.h"
 #include "lwip/inet.h"
+#include "lwip/sockets.h"
 #include "sdkconfig.h"
 
 #ifndef CONFIG_ESP_KNX_IP_MAX_GROUP_ADDRESSES
