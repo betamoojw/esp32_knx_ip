@@ -33,6 +33,40 @@ TEST_CASE("DPT9 preserves fork encoder vectors", "[esp_knx_ip][dpt]")
     TEST_ASSERT_FLOAT_WITHIN(0.01f, KNX_DPT9_MIN_VALUE, value);
 }
 
+TEST_CASE("extended DPT codecs preserve wire vectors", "[esp_knx_ip][dpt]")
+{
+    uint8_t data[8] = {};
+
+    TEST_ASSERT_TRUE(knx_dpt4_ascii_encode('A', data, sizeof(data)));
+    TEST_ASSERT_EQUAL_HEX8(0x41, data[0]);
+    data[0] = 0x80;
+    char ascii = 0;
+    TEST_ASSERT_FALSE(knx_dpt4_ascii_decode(data, 1, &ascii));
+
+    TEST_ASSERT_TRUE(knx_dpt5_angle_encode(180.0f, data, sizeof(data)));
+    TEST_ASSERT_EQUAL_HEX8(0x80, data[0]);
+
+    const knx_dpt26_scene_info_t scene = {true, 12};
+    TEST_ASSERT_TRUE(knx_dpt26_encode(&scene, data, sizeof(data)));
+    TEST_ASSERT_EQUAL_HEX8(0x4c, data[0]);
+    knx_dpt26_scene_info_t decoded_scene = {};
+    TEST_ASSERT_TRUE(knx_dpt26_decode(data, 1, &decoded_scene));
+    TEST_ASSERT_TRUE(decoded_scene.active);
+    TEST_ASSERT_EQUAL_UINT8(12, decoded_scene.scene_number);
+    data[0] = 0x80;
+    TEST_ASSERT_FALSE(knx_dpt26_decode(data, 1, &decoded_scene));
+
+    const uint8_t invalid_utf8[] = {0xc0, 0x80, 0x00};
+    char text[8] = {};
+    TEST_ASSERT_FALSE(knx_dpt28_decode(invalid_utf8, sizeof(invalid_utf8),
+                                       text, sizeof(text)));
+
+    const uint8_t invalid_rgbw[] = {1, 2, 3, 4, 1, 0x0f};
+    knx_dpt251_color_t rgbw = {};
+    TEST_ASSERT_FALSE(knx_dpt251_decode(invalid_rgbw, sizeof(invalid_rgbw),
+                                        &rgbw));
+}
+
 TEST_CASE("routing indication round trips and rejects truncation",
           "[esp_knx_ip][protocol]")
 {
