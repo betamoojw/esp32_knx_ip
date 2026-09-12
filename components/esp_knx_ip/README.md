@@ -86,8 +86,63 @@ multi-byte encoded DPT payload to `esp_knx_ip_send()`.
 
 ## DPT conversion
 
-The public codec supports DPT 1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, and
-232 payloads. All functions validate pointers and minimum buffer lengths.
+The public, allocation-free codec covers the following DPT main families. A
+`Full` family validates its defined wire structure and ranges. `Wire-level`
+means the family bytes can be encoded and decoded, but the caller must apply
+the selected subtype's enum, reserved-value, or named-bit semantics.
+
+| DPT | KNX value | Bytes | Coverage |
+|---|---|---:|---|
+| 1 | Boolean | 1 compact bit | Full; all DPT 1 subtypes share this encoding |
+| 2 | 1-bit controlled | 1 compact byte | Full |
+| 3 | 3-bit controlled | 1 compact byte | Full |
+| 4 | Character | 1 | Full for DPT 4.001 ASCII through `knx_dpt4_ascii_*`; raw family API supports DPT 4.002 ISO-8859-1 |
+| 5 | Unsigned 8-bit | 1 | Full raw U8, DPT 5.001 scaling, and DPT 5.003 angle conversions |
+| 6 | Signed 8-bit | 1 | Full numeric encoding; DPT 6.020 status/mode fields are wire-level |
+| 7 | Unsigned 16-bit | 2 | Full; subtype units share the family encoding |
+| 8 | Signed 16-bit | 2 | Full; subtype units share the family encoding |
+| 9 | KNX 16-bit float | 2 | Full with fork-compatible encoder behavior described below |
+| 10 | Time of day | 3 | Full, including weekday and reserved-bit validation |
+| 11 | Date | 3 | Full with leap-year calendar validation |
+| 12 | Unsigned 32-bit | 4 | Full; subtype units share the family encoding |
+| 13 | Signed 32-bit | 4 | Full; subtype units share the family encoding |
+| 14 | IEEE-754 binary32 | 4 | Full; subtype units share the family encoding |
+| 15 | Access data | 4 | Wire-level packed value; field credentials and error semantics are caller-owned |
+| 16 | Fixed string | 14 | Full family storage; caller selects ASCII or ISO-8859-1 character policy |
+| 17 | Scene number | 1 | Full, scene 0 through 63 |
+| 18 | Scene control | 1 | Full learn/recall flag and scene number |
+| 19 | Date and time | 8 | Full structural, calendar, validity-flag, and reserved-bit handling |
+| 20 | 8-bit enumeration | 1 | Wire-level; valid enum members depend on the subtype |
+| 21 | 8-bit status set | 1 | Wire-level; named and reserved bits depend on the subtype |
+| 22 | 16-bit status set | 2 | Wire-level; named and reserved bits depend on the subtype |
+| 23 | 2-bit control | 1 compact byte | Full family wire shape; action meaning depends on the subtype |
+| 24 | Variable 8-bit string | Variable, NUL-terminated | Full framing; character interpretation is caller-owned |
+| 25 | Double nibble | 1 | Wire-level; nibble meanings depend on the subtype |
+| 26 | Scene information | 1 | Full active flag, reserved bit, and scene number |
+| 27 | Combined status | 4 | Wire-level 16-bit value plus 16-bit mask |
+| 28 | UTF-8 string | Variable, NUL-terminated | Full framing and UTF-8 validation |
+| 29 | Signed 64-bit | 8 | Full |
+| 30 | 8-bit bitfield | 1 | Wire-level; named and reserved bits depend on the subtype |
+| 31 | 24-bit bitfield | 3 | Wire-level; named and reserved bits depend on the subtype |
+| 232 | RGB color | 3 | Full raw RGB channels |
+| 234 | ISO 639-1 language | 2 | Full lowercase two-letter language code wire format |
+| 251 | RGBW color | 6 | Full channels, reserved byte, and low-nibble validity mask |
+
+DPT 17 is a one-byte scene number, not a three-byte value. DPT 234.001 is an
+ISO 639-1 language code, not a scene number. These definitions supersede the
+incorrect labels in the repository task document.
+
+The component deliberately has no DPT registry or automatic subtype dispatch.
+Applications choose the codec matching their configured group object. The
+transport remains DPT-agnostic, so every supported payload can be used for
+read, write, or response telegrams without coupling protocol parsing to a type
+database. There is no MCP or DPT-aware JSON configuration layer in this
+repository; the optional HTTP adapter only manages KNX runtime configuration.
+
+All codec functions validate pointers and minimum buffer lengths. Fixed-width
+decoders consume the first value when a larger buffer is supplied. Variable
+strings require their NUL terminator within the supplied length and report the
+encoded length to the caller.
 
 The DPT9 encoder intentionally preserves the fork's fixed magnitude, exponent,
 rounding, and 11-bit two's-complement algorithm for values it can emit. Unlike
