@@ -3,7 +3,7 @@ menu "ESP KNX/IP component"
     config ESP_KNX_IP_MAX_GROUP_ADDRESSES
         int "Maximum callback registrations"
         range 1 255
-        default 32
+        default 128
         help
             Fixed callback registry capacity allocated in each component handle.
 
