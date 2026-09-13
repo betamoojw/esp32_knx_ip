@@ -11,7 +11,7 @@
 #include "sdkconfig.h"
 
 #ifndef CONFIG_ESP_KNX_IP_MAX_GROUP_ADDRESSES
-#define CONFIG_ESP_KNX_IP_MAX_GROUP_ADDRESSES 32
+#define CONFIG_ESP_KNX_IP_MAX_GROUP_ADDRESSES 128
 #endif
 
 struct esp_knx_ip_callback_registration {
